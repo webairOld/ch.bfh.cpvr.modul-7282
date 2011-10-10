@@ -33,20 +33,24 @@ void drawHouse(float height, float diameter)
 /////////////////////////////////////////////////////////////////////////////////////////
 {
 	// draw ground
-	glColor3f(0.0, 0.75, 0.0);
+
 
 	float base = 0.0 - (height/2);
 	float towerHeight = (height/2);
 
 
 	//Fundament
-
+	glColor3f(0.0, 0.75, 0.0);
 	//base
+	glEnable(GL_NORMALIZE);
+
     glBegin(GL_QUADS);
-		glVertex3f(0.0F, base, 0.0F);
-		glVertex3f(0.0F, base, diameter);
+
+    glVertex3f(diameter,base, diameter);
+		glVertex3f(diameter,  base, 0.0f);
+		glVertex3f(0.0f, base, 0.0f);
+		glVertex3f(0.0f, base, diameter);
 		glVertex3f(diameter,base, diameter);
-		glVertex3f(diameter,  base, 0.0F);
     glEnd();
 
     float sectionHeight = towerHeight - ((height/13) * 2);
