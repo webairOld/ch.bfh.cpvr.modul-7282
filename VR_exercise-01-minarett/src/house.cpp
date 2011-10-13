@@ -4,14 +4,20 @@
 
 
 #include <GL/glut.h>
-
 #include <iostream>
+#include <math.h>
+
 using namespace std;
 
 #include "zpr.h"
 
 const float HEIGHT = 12.0F;
 const float WIDTH = 10.0F;
+
+struct Point2d {
+	float x;
+	float y;
+};
 
 
 void checkErrorCode(void)
@@ -96,6 +102,23 @@ void drawHouse(float height, float width)
     	glVertex3f(houseLeft,houseHeight,houseFront);
     glEnd();
 
+    glColor3f(0.0,0.0,0.75);
+    glBegin(GL_QUAD_STRIP);
+		glVertex3f(houseLeft,baseHeight,houseBack);
+		glVertex3f(houseLeft,houseHeight,houseBack);
+    	glVertex3f(houseLeft,baseHeight,houseFront);
+    	glVertex3f(houseLeft,houseHeight,houseFront);
+
+    	glVertex3f(houseRight,baseHeight,houseFront);
+    	glVertex3f(houseRight,houseHeight,houseFront);
+
+    	glVertex3f(houseRight,baseHeight,houseBack);
+    	glVertex3f(houseRight,houseHeight,houseBack);
+
+    	glVertex3f(houseLeft,baseHeight,houseFront);
+    	glVertex3f(houseLeft,houseHeight,houseFront);
+    glEnd();
+
     float houseRoofFront = houseFront + (width/30);
     float houseRoofBack = houseBack - (width / 30);
     float houseRoofLeft = houseLeft - (width / 26);
@@ -120,8 +143,97 @@ void drawHouse(float height, float width)
     	glVertex3f(houseRoofLeft,houseHeight,houseRoofFront);
     glEnd();
 
+    //circle calculation
+    int accuracy = 30;
+    float angle = (M_PI*2)/accuracy;
+    int radius = width / 4;
+    Point2d points[accuracy];
+
+    for (int i=0; i < accuracy; i++) {
+    	Point2d point;
+    	float currentAngle = angle*i;
+    	point.x = cos(currentAngle) * radius;
+    	point.y = sin(currentAngle) * radius;
+    	//cout << " x: " << points[i].x << " y: " << points[i].y  << " angle: " << currentAngle << endl;
+    	points[i] = point;
+    }
+
+    //the minarett
+    float minarettScale = (width/6)/4;
+    float minarettCenter = houseRight + (width/16) + radius;
+    float minarettHeight = baseHeight + height-(height/4);
+    float minarettRoofHeight = baseHeight + height;
+
+    glColor3f(0.2f,0.6f,0.6f);
+    glBegin(GL_QUAD_STRIP);
+    for (int i=0; i < accuracy+1; i++) {
+    	int index = i % accuracy;
+    	glVertex3f(minarettCenter+(points[index].x*minarettScale),baseHeight,minarettCenter+(points[index].y*minarettScale));
+    	glVertex3f(minarettCenter+(points[index].x*minarettScale),minarettHeight,minarettCenter+(points[index].y*minarettScale));
+    }
+    glEnd();
 
 
+    //the floor
+    glColor3f(1.0f,0.2f,0.2f);
+    glBegin(GL_TRIANGLE_FAN);
+    glVertex3f(minarettCenter,minarettRoofHeight,minarettCenter);
+    for (int i=0; i < accuracy+1; i++) {
+    	int index = i % accuracy;
+    	glVertex3f(minarettCenter+(points[index].x*minarettScale),minarettHeight,minarettCenter+(points[index].y*minarettScale));
+    }
+    glEnd();
+
+    //first balcon
+    float balconSize = height / 16;
+    float balconBase = baseHeight + balconSize*9;
+    float balconHeight = balconBase + balconSize;
+    float balconScale = minarettScale * 1.4;
+
+    glColor3f(0.2f,0.2f,0.8f);
+    glBegin(GL_QUAD_STRIP);
+    for (int i=0; i < accuracy+1; i++) {
+    	int index = i % accuracy;
+    	float scaleFactorTop = balconScale*1.2;
+    	glVertex3f(minarettCenter+(points[index].x*balconScale),balconBase,minarettCenter+(points[index].y*balconScale));
+    	glVertex3f(minarettCenter+(points[index].x*scaleFactorTop),balconHeight,minarettCenter+(points[index].y*balconScale));
+    }
+    glEnd();
+
+    //the floor
+    glColor3f(0.2f,0.2f,0.6f);
+    glBegin(GL_TRIANGLE_FAN);
+    glVertex3f(minarettCenter,balconBase,minarettCenter);
+    for (int i=0; i < accuracy+1; i++) {
+    	int index = i % accuracy;
+    	float scaleFactor = (balconScale/2);
+    	glVertex3f(minarettCenter+(points[index].x*balconScale),balconBase,minarettCenter+(points[index].y*balconScale));
+    }
+    glEnd();
+
+    //second balcon
+    balconBase = baseHeight + balconSize*5;
+    balconHeight = balconBase + balconSize;
+
+    glColor3f(0.2f,0.2f,0.8f);
+    glBegin(GL_QUAD_STRIP);
+    for (int i=0; i < accuracy+1; i++) {
+    	int index = i % accuracy;
+    	float scaleFactorTop = balconScale*1.2;
+    	glVertex3f(minarettCenter+(points[index].x*balconScale),balconBase,minarettCenter+(points[index].y*balconScale));
+    	glVertex3f(minarettCenter+(points[index].x*scaleFactorTop),balconHeight,minarettCenter+(points[index].y*balconScale));
+    }
+    glEnd();
+
+    //the floor
+    glColor3f(0.2f,0.2f,0.6f);
+    glBegin(GL_TRIANGLE_FAN);
+    glVertex3f(minarettCenter,balconBase,minarettCenter);
+    for (int i=0; i < accuracy+1; i++) {
+    	int index = i % accuracy;
+    	glVertex3f(minarettCenter+(points[index].x*balconScale),balconBase,minarettCenter+(points[index].y*balconScale));
+    }
+    glEnd();
 
 }
 
