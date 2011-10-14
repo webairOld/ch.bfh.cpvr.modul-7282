@@ -11,8 +11,8 @@ using namespace std;
 
 #include "zpr.h"
 
-const float HEIGHT = 12.0F;
-const float WIDTH = 10.0F;
+const float HEIGHT = 16.0F;
+const float WIDTH = 8.0F;
 
 struct Point2d {
 	float x;
@@ -174,11 +174,11 @@ void drawHouse(float height, float width)
     glEnd();
 
 
-    //the floor
+    //the roof
     glColor3f(1.0f,0.2f,0.2f);
     glBegin(GL_TRIANGLE_FAN);
     glVertex3f(minarettCenter,minarettRoofHeight,minarettCenter);
-    for (int i=0; i < accuracy+1; i++) {
+    for (int i=accuracy; i > -1; i--) {
     	int index = i % accuracy;
     	glVertex3f(minarettCenter+(points[index].x*minarettScale),minarettHeight,minarettCenter+(points[index].y*minarettScale));
     }
@@ -242,9 +242,10 @@ void display(void)
 /////////////////////////////////////////////////////////////////////////////////////////
 {
     glMatrixMode(GL_MODELVIEW);
+
 	glPushMatrix();
 
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	drawHouse(HEIGHT,WIDTH);
 	glFlush();
@@ -257,12 +258,13 @@ void display(void)
 void initRendering()
 /////////////////////////////////////////////////////////////////////////////////////////
 {
+    glEnable(GL_DEPTH_TEST);
     glClearColor(0.0, 0.0, 0.0, 0.0);
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glDisable(GL_CULL_FACE);
-
     glMatrixMode(GL_PROJECTION);
+
     glLoadIdentity();
     glOrtho(-10.0, 10.0, -10.0, 10.0, -10.0, 10.0);
 }
@@ -329,7 +331,7 @@ int main(int argc, char** argv)
 /////////////////////////////////////////////////////////////////////////////////////////
 {
     glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_RGB);
+    glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH);
     glutInitWindowSize(640, 640);
     glutInitWindowPosition(100, 100);
     glutCreateWindow("3D House");
