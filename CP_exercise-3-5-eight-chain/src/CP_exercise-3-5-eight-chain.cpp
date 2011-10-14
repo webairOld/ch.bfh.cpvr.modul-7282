@@ -119,9 +119,3 @@ int main() {
 		cout << "found " << objNr << " objects" << endl;
 	return 0;
 }
-
-
-
-void readFile() {
-
-}
