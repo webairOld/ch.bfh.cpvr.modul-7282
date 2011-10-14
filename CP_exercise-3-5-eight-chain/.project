@@ -3,7 +3,6 @@
 	<name>CP_exercise-3-5-eight-chain</name>
 	<comment></comment>
 	<projects>
-		<project>lib-IPL</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
