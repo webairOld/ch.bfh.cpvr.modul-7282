@@ -4,6 +4,7 @@
 
 
 #include <GL/glut.h>
+#include <math.h>
 
 #include <iostream>
 using namespace std;
@@ -16,6 +17,10 @@ using namespace std;
 
 
 bool ANIMATION_RUNNING = false;
+
+int SPEED = 20;
+
+float ANGLE_1 = 0.0f;
 
 
 void checkErrorCode()
@@ -31,6 +36,16 @@ void checkErrorCode()
 	}
 }
 
+void calculateAnimations (int timerId) {
+	ANGLE_1 += 2.0f;
+	ANGLE_1 = fmod(ANGLE_1,360.0f);
+	glutPostRedisplay();
+	if (ANIMATION_RUNNING) {
+		glutTimerFunc(SPEED,calculateAnimations,0);
+	}
+
+
+}
 
 void display()
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -38,12 +53,13 @@ void display()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glMatrixMode(GL_MODELVIEW);
-	glPushMatrix();
 
 	// draw sun
+
+    glPushMatrix();
+    glRotatef(ANGLE_1,0.0f,0.0f,1.0f);
 	glColor3f(1.0, 1.0, 0.0);
 	glutSolidSphere(2.0, 30, 20);
-
 	glPopMatrix();
 
 	glutSwapBuffers();
@@ -79,12 +95,16 @@ void Menu1(int item)
 		{
 			glutChangeToMenuEntry(1, "Stop Animation", 2);
 			ANIMATION_RUNNING = true;
+			glutTimerFunc(10,calculateAnimations,0);
 			break;
 		}
 		case 2:
 		{
 			glutChangeToMenuEntry(1, "Start Animation", 1);
 			ANIMATION_RUNNING = false;
+
+
+
 			break;
 		}
 		default:
@@ -93,6 +113,7 @@ void Menu1(int item)
 		}
 	}
 	glutPostRedisplay();
+
 }
 
 
@@ -131,6 +152,20 @@ void keyboard(unsigned char key, int x, int y)
 			}
 			break;
 		}
+        case '+':
+        {
+        	SPEED = (SPEED > 1) ? SPEED-1 : 1;
+        	cout << "new Speed: "<< SPEED << endl;
+        	break;
+        }
+        case '-':
+        {
+
+        	SPEED += 1;
+        	cout << "new Speed: "<< SPEED << endl;
+        	break;
+        }
+
     }
 }
 
