@@ -20,7 +20,8 @@ bool ANIMATION_RUNNING = false;
 
 int SPEED = 20;
 
-float ANGLE_1 = 0.0f;
+float ROTATION = 0.0f;
+
 
 
 void checkErrorCode()
@@ -37,8 +38,8 @@ void checkErrorCode()
 }
 
 void calculateAnimations (int timerId) {
-	ANGLE_1 += 2.0f;
-	ANGLE_1 = fmod(ANGLE_1,360.0f);
+	ROTATION += 2.0f;
+	ROTATION = fmod(ROTATION,360.0f);
 	glutPostRedisplay();
 	if (ANIMATION_RUNNING) {
 		glutTimerFunc(SPEED,calculateAnimations,0);
@@ -57,10 +58,21 @@ void display()
 	// draw sun
 
     glPushMatrix();
-    glRotatef(ANGLE_1,0.0f,0.0f,1.0f);
+    glRotatef(ROTATION,0.0f,0.0f,1.0f);
 	glColor3f(1.0, 1.0, 0.0);
 	glutSolidSphere(2.0, 30, 20);
 	glPopMatrix();
+
+	glPushMatrix();
+	glRotatef(ROTATION,0.0f,0.0f,1.0f);
+	glTranslatef(0.0f,5.0f,0.0f);
+
+	glRotatef(ROTATION,0.0f,1.0f,0.0f);
+	glColor3f(0.0f,0.0f,1.0f);
+	glutSolidSphere(1.5,20,10);
+
+	glPopMatrix();
+
 
 	glutSwapBuffers();
 
